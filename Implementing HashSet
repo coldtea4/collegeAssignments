@@ -1,0 +1,38 @@
+public static <E> boolean subset(HashSet<E> s1, HashSet<E> s2) {
+    return s2.containsAll(s1);
+}
+
+public static <E> HashSet<E> union(HashSet<E> s1, HashSet<E> s2) {
+    Hashset<> s1s2Union = new HashSet<>();
+    s1s2Union.addAll(s1);
+    s1s2Union.addAll(s2);
+    return s1s2Union;
+}
+
+public static <E> HashSet<E> intersection(HashSet<E> s1, HashSet<E> s2) {
+    HashSet<> sIntersect = new HashSet<>();
+    sIntersect.addAll(s1);
+    sIntersect.retainAll(s2);
+    return sIntersect;
+}
+
+public static <E> HashSet<E> difference(HashSet<E> s1, HashSet<E> s2) {
+    HashSet<> s1minuss2 = new HashSet<>();
+    s1minuss2.addAll(s1);
+    s1minuss2.removeAll(s2);
+    return s1minuss2;
+}
+
+public static <U,V> HashSet<Pair<U,V>> cartesianProduct(HashSet<U> s1, HashSet<V> s2) {
+    HashSet<Pair<U,V>> sCartProd = new HashSet<>();
+    Iterator s1it = s1.iterator();
+    Iterator s2it = s2.iterator();
+    U currs1;
+    while(s1it.hasNext()) {
+        currs1 = s1it.next();
+        while(s2it.hasNext()) {
+            sCartProd.add(new Pair<>(currs1, s2it.next()));
+        }
+        s2it = s2.iterator();
+    }
+}
