@@ -1,87 +1,178 @@
 #include <iostream>
 using namespace std;
-enum Action { ROCK, PAPER, SCISSORS, DONE };
+enum action {ROCK, PAPER, SCISSORS};
+void displayRules();
+action retrievePlay(char);
+bool validSelection(char&);
+bool validSelectionWelcome(char);
+void convertEnum(action);
+action winningObject(action, action);
+
+void gameResult(action, action, int&);
+void displayResults(int, int, int);
+
 int main() {
-	char p1Action, p2Action;
-	int p1Score = 0, p2Score = 0, ties = 0;
-	Action p1, p2;
-	cout << endl;
-	cout << "RULES: Enter 'r' for rock, 'p' for paper, or 's' for scissors (enter 'x' to end game)." << endl;
-	while (p1 != DONE && p2 != DONE) {
-		cout << "Player 1's Choice: ";
-		cin >> p1Action;
-		while (p1Action != 'r' || p1Action != 'R' || p1Action != 'p' || p1Action != 'P' || p1Action != 's' || p1Action != 'S' || p1Action != 'x' || p1Action != 'X') {
-			cout << "Invalid input. Please enter 'r'/'R', 'p'/'P', 's'/'S', or 'x'/'X'." << endl;
-			cout << "Player 1's Choice: ";
-			cin >> p1Action;
+	int gameCount = 0, winCount1 = 0, winCount2 = 0, gameWinner;
+	char response;
+	char selection1, selection2;
+	action player1, player2;
+	cout << "===========" << endl << "Would you like to play: 'Rock, Paper, Scissors'? (Y/N)" << endl;
+	cin >> response;
+	if ((response == 'n') || (response == 'N')) {
+		cout << "Hope to see you soon!" << endl << "===========";
+		return 0;
+	}
+	displayRules();
+	while (response != 'N' && response != 'n') {
+		bool yN = validSelectionWelcome(response);
+		if (!yN) return 0;
+		cout << "Player One, please enter your action: ";
+		cin >> selection1;
+		cout << endl;
+		validSelection(selection1);
+		cout << "Great! Now.. player Two, please enter your action: ";
+		cin >> selection2;
+		cout << endl;
+		validSelection(selection2);
+		player1 = retrievePlay(selection1);
+		player2 = retrievePlay(selection2);
+		if (player1 == player2) {
+			cout << "It's a tie!!" << endl;
 		}
-		switch (p1Action) {
-			case 'r':
-				p1 = ROCK;
-				break;
-			case 'R':
-				p1 = ROCK;
-				break;
-			case 'p':
-				p1 = PAPER;
-				break;
-			case 'P':
-				p1 = PAPER;
-				break;
-			case 's':
-				p1 = SCISSORS;
-				break;
-			case 'S':
-				p1 = SCISSORS;
-				break;
-			case 'x':
-				p1 = DONE;
-				continue;
-				break;
-			case 'X':
-				p1 = DONE;
-				continue;
-				break;
+		else {
+			(winningObject(player1, player2) == player1) ? gameWinner = 1 : gameWinner = 2;
+			gameResult(player1, player2, gameWinner);
+			(gameWinner == 1) ? winCount1++ : winCount2++;
 		}
-		cout << "Player 2's Choice: ";
-		cin >> p2Action;
-		while (p2Action != 'r' || p2Action != 'R' || p2Action != 'p' || p2Action != 'P' || p2Action != 's' || p2Action != 'S' || p2Action != 'x' || p2Action != 'X') {
-			cout << "Invalid input. Please enter 'r'/'R', 'p'/'P', 's'/'S', or 'x'/'X'." << endl;
-			cout << "Player 2's Choice: ";
-			cin >> p2Action;
-		}
-		switch (p2Action) {
+		gameCount++;
+		cout << "One More Round?" << endl;
+		cin >> response;
+	}
+	displayResults(gameCount, winCount1, winCount2);
+	return 0;
+}
+
+//show rules
+void displayRules() {
+	cout << "RULES: Enter 'r' for rock, 'p' for paper, or 's' for scissors." << endl;
+}
+
+//takes player input, returns respective value for player enum
+action retrievePlay(char input) {
+	switch (input){
 		case 'r':
-			p2 = ROCK;
+			return ROCK;
 			break;
 		case 'R':
-			p2 = ROCK;
+			return ROCK;
 			break;
 		case 'p':
-			p2 = PAPER;
+			return PAPER;
 			break;
 		case 'P':
-			p2 = PAPER;
+			return PAPER;
 			break;
 		case 's':
-			p2 = SCISSORS;
+			return SCISSORS;
 			break;
 		case 'S':
-			p2 = SCISSORS;
+			return SCISSORS;
 			break;
-		case 'x':
-			p2 = DONE;
-			continue;
-			break;
-		case 'X':
-			p2 = DONE;
-			continue;
-			break;
-		}
 	}
 }
-	
 
+//checks if the player puts in proper input for their turn, LOOPS until proper
+bool validSelection(char& input) {
+	while ((input != 'r') && (input != 'R') && (input != 'p') && (input != 'P') && (input != 's') && (input != 'S')) {
+		cout << "Invalid input. Please enter 'r'/'R', 'p'/'P', 's'/'S'." << endl;
+		cin >> input;
+	}
+	return true;
+}
 
-	return 0;
+//checks if players are entering proper input for game invitation, LOOPS until proper
+bool validSelectionWelcome(char input) {
+	while ((input != 'y') && (input != 'Y') && (input != 'n') && (input != 'N')) {
+		cout << "Invalid input. Please enter 'y'/'Y' or 'n'/'N'." << endl;
+		cin >> input;
+	}
+	if ((input == 'n') || (input == 'N')) {
+		cout << "Aw, hope to see you soon!" << endl;
+		return false;
+	}
+	if ((input == 'y') || (input == 'Y')) {
+		cout << "Welome to 'Rock, Paper, Scissors'!" << endl << "===========" << endl;
+		return true;
+	}
+	return true;
+}
+
+//prints out enum value
+void convertEnum(action input) {
+	switch (input) {
+		case ROCK:
+			cout << "ROCK";
+			break;
+		case PAPER:
+			cout << "PAPER";
+			break;
+		case SCISSORS:
+			cout << "SCISSORS";
+			break;
+	}
+}
+
+//takes both players' inputs and returns winning player of round
+action winningObject(action player1, action player2) {
+	if (player1 == ROCK && player2 == SCISSORS) {
+		return player1;
+	}
+	else if (player1 == ROCK && player2 == PAPER) {
+		return player2;
+	}
+	else if (player1 == PAPER && player2 == ROCK) {
+		return player1;
+	}
+	else if (player1 == PAPER && player2 == SCISSORS) {
+		return player2;
+	}
+	else if (player1 == SCISSORS && player2 == PAPER) {
+		return player1;
+	}
+	else if (player1 == SCISSORS && player2 == ROCK) {
+		return player2;
+	}
+}
+
+//prints out which player won the round and with what action
+void gameResult(action player1, action player2, int& winner) {
+	switch (winner) {
+		case 1:
+			cout << "PLAYER ONE WINS THIS ROUND WITH: ";
+			convertEnum(player1);
+			cout << endl << endl;
+			break;
+		case 2:
+			cout << "PLAYER TWO WINS THIS ROUND WITH: ";
+			convertEnum(player2);
+			cout << endl << endl;
+			break;
+	}
+}
+
+//displays results at end of game
+void displayResults(int gCount, int wCount1, int wCount2) {
+	cout << "AND THE RESULTS ARE IN!" << endl << "===========" << endl;
+	if (wCount1 > wCount2) {
+		cout << "PLAYER ONE WINS THE GAME!!" << endl;
+	}
+	else if (wCount1 < wCount2) {
+		cout << "PLAYER TWO WINS THE GAME!!" << endl;
+	}
+	else {
+		cout << "IT WAS A TIE!?" << endl;
+	}
+	cout << "PLAYER ONE VICTORIES: " << wCount1 << endl;
+	cout << "PLAYER TWO VICTORIES: " << wCount2 << endl;
+	cout << "MATCHES PLAYED: " << gCount << endl << endl;
 }
